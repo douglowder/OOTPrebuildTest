@@ -4,11 +4,7 @@ import { Link } from 'expo-router';
 import { type ComponentProps } from 'react';
 import { Platform, Pressable } from 'react-native';
 
-const openBrowserAsync =
-  Platform.isTV && Platform.OS === 'ios'
-    ? async () => {}
-    : // eslint-disable-next-line @typescript-eslint/no-require-imports
-      require('expo-web-browser').openBrowserAsync;
+const openBrowserAsync = async (href: any) => {};
 
 type Props = Omit<ComponentProps<typeof Link>, 'href'> & {
   href: string;
@@ -48,5 +44,9 @@ function ExternalLinkTV({ href, ...rest }: Props) {
 }
 
 export function ExternalLink(props: Props) {
-  return Platform.isTV ? <ExternalLinkTV {...props} /> : <ExternalLinkMobile {...props} />;
+  return Platform.isTV ? (
+    <ExternalLinkTV {...props} />
+  ) : (
+    <ExternalLinkMobile {...props} />
+  );
 }
