@@ -17,12 +17,14 @@ Then start the packager, and copy the OOTPrebuildTest image from tvos/build/Buil
 - tvOS build
 - tvOS debug app runs
 - tvOS debug app connects to packager
+- tvOS debug app renders correctly with no errors or warnings
+
 
 ## Things that don't work
 
+- tvOS release build crashing, still debugging this
 - Published canary bare-minimum template is missing the tvos folder
 - `expo.icon` not copied into tvos folder
 - Pod install not automatically run for tvos on prebuild
 - No `expo run:tvos` command yet
-- Metro not working correctly, still seems to be bundling from `react-native` and not `react-native-tvos` (missing TVFocusGuideView, for example)
 - 
