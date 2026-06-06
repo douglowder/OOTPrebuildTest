@@ -14,6 +14,7 @@
     "prebuild:tv": "expo prebuild --clean --platform tvos --template ./template/tv-template.tgz",
     "tvos:pod-install": "(cd tvos; pod install; cd -)",
     "tvos:build": "set -o pipefail && xcodebuild -workspace tvos/OOTPrebuildTest.xcworkspace -scheme OOTPrebuildTest -configuration Debug -sdk appletvsimulator -arch arm64 -derivedDataPath tvos/build | pnpm excpretty",
+    "tvos:build:release": "set -o pipefail && xcodebuild -workspace tvos/OOTPrebuildTest.xcworkspace -scheme OOTPrebuildTest -configuration Release -sdk appletvsimulator -arch arm64 -derivedDataPath tvos/build | pnpm excpretty",
     "deploy": "npx expo export -p web && npx eas-cli@latest deploy"
   },
   "dependencies": {
