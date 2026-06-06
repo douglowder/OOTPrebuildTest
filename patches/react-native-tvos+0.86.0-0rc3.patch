@@ -12,7 +12,7 @@ index eb90640..fbeb63b 100644
  NSString *const RCTUserInterfaceStyleDidChangeNotification = @"RCTUserInterfaceStyleDidChangeNotification";
  NSString *const RCTUserInterfaceStyleDidChangeNotificationTraitCollectionKey = @"traitCollection";
 diff --git a/node_modules/react-native-tvos/react-native.config.js b/node_modules/react-native-tvos/react-native.config.js
-index 6d70ec0..714fea5 100644
+index 6d70ec0..9e08772 100644
 --- a/node_modules/react-native-tvos/react-native.config.js
 +++ b/node_modules/react-native-tvos/react-native.config.js
 @@ -120,14 +120,6 @@ const config = {
@@ -161,6 +161,30 @@ index 3ffba68..59ca6c7 100644
        {
          paths: [projectRoot],
        },
+diff --git a/node_modules/react-native-tvos/scripts/react-native-xcode.sh b/node_modules/react-native-tvos/scripts/react-native-xcode.sh
+index 1dcdf55..903e4dc 100755
+--- a/node_modules/react-native-tvos/scripts/react-native-xcode.sh
++++ b/node_modules/react-native-tvos/scripts/react-native-xcode.sh
+@@ -113,6 +113,9 @@ case "$PLATFORM_NAME" in
+   "macosx")
+     BUNDLE_PLATFORM="macos"
+     ;;
++  "appletv"*)
++    BUNDLE_PLATFORM="tvos"
++    ;;
+   *)
+     BUNDLE_PLATFORM="ios"
+     ;;
+@@ -151,6 +154,9 @@ else
+   EXTRA_ARGS+=("--config-cmd" "'$NODE_BINARY' $NODE_ARGS '$REACT_NATIVE_DIR/cli.js' config")
+ fi
+ 
++echo "Platform name = $PLATFORM_NAME"
++echo "Bundle platform = $BUNDLE_PLATFORM"
++
+ # shellcheck disable=SC2086
+ "$NODE_BINARY" $NODE_ARGS "$CLI_PATH" $BUNDLE_COMMAND \
+   $CONFIG_ARG \
 diff --git a/node_modules/react-native-tvos/scripts/react_native_pods.rb b/node_modules/react-native-tvos/scripts/react_native_pods.rb
 index f2525de..a560e41 100644
 --- a/node_modules/react-native-tvos/scripts/react_native_pods.rb
