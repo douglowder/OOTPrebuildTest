@@ -34,7 +34,7 @@ index 6d70ec0..714fea5 100644
    config.platforms.tvos = {
      projectConfig: apple.getProjectConfig({platformName: 'tvos'}),
      dependencyConfig: apple.getDependencyConfig({platformName: 'tvos'}),
-+    npmPackageName: 'react-native-macos',
++    npmPackageName: 'react-native-tvos',
    };
  } catch {
    if (verbose) {
