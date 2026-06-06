@@ -2,14 +2,17 @@
 
 ## 🚀 How to use
 
+Have a booted Apple TV simulator running.
+
 ```sh
 pnpm
 pnpm prebuild:tv
 pnpm tvos:pod-install
-pnpm tvos:build
+pnpm tvos:debug:build
+pnpm tvos:debug:install
 ```
 
-Then start the packager, and copy the OOTPrebuildTest image from tvos/build/Build/Products/Debug-appletvsimulator into your running Apple TV simulator, and run it.
+Then start the packager, and run the app on the Apple TV simulator.
 
 ## Things that work
 
@@ -18,13 +21,17 @@ Then start the packager, and copy the OOTPrebuildTest image from tvos/build/Buil
 - tvOS debug app runs
 - tvOS debug app connects to packager
 - tvOS debug app renders correctly with no errors or warnings
+- tvOS release build compiles and runs
 
 
-## Things that don't work
+## Things that don't work yet
 
-- tvOS release build crashing, still debugging this
+- tvOS release build having issues with the event demo (buttons not focusable)
 - Published canary bare-minimum template is missing the tvos folder
 - `expo.icon` not copied into tvos folder
 - Pod install not automatically run for tvos on prebuild
 - No `expo run:tvos` command yet
-- 
+
+## Notes
+
+- Since we are still patching react-native-tvos, we need the buildReactNativeFromSource flag set 
