@@ -10,8 +10,8 @@
     "web": "expo start --web",
     "reset-project": "node ./scripts/reset-project.js",
     "lint": "expo lint",
-    "prebuild": "expo prebuild --clean",
-    "prebuild:tv": "EXPO_TV=1 expo prebuild --clean",
+    "prebuild": "expo prebuild --clean --template bare-minimum@56.0.20-canary-20260606-4d4666c",
+    "prebuild:tv": "expo prebuild --clean --platform tvos --template bare-minimum@56.0.20-canary-20260606-4d4666c",
     "deploy": "npx expo export -p web && npx eas-cli@latest deploy"
   },
   "dependencies": {
