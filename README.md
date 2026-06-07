@@ -31,6 +31,7 @@ Then start the packager, and run the app on the Apple TV simulator.
 - `expo.icon` not copied into tvos folder
 - Pod install not automatically run for tvos on prebuild
 - No `expo run:tvos` command yet
+- iOS prebuild breaks if react-native-tvos present in dependencies
 
 ## Notes
 
