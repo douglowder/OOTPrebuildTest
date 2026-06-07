@@ -10,7 +10,7 @@
     "web": "expo start --web",
     "reset-project": "node ./scripts/reset-project.js",
     "lint": "expo lint",
-    "prebuild": "expo prebuild --clean --template ./template/tv-template.tgz",
+    "prebuild": "expo prebuild --clean --platform ios --template ./template/tv-template.tgz",
     "prebuild:tv": "expo prebuild --clean --platform tvos --template ./template/tv-template.tgz",
     "tvos:pod-install": "(cd tvos; pod install; cd -)",
     "tvos:debug:build": "set -o pipefail && xcodebuild -workspace tvos/OOTPrebuildTest.xcworkspace -scheme OOTPrebuildTest -configuration Debug -sdk appletvsimulator -arch arm64 -derivedDataPath tvos/build | pnpm excpretty",

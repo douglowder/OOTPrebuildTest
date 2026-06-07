@@ -1,1 +1,4 @@
+allowBuilds:
+  msgpackr-extract: true
+  postinstall-postinstall: true
 nodeLinker: hoisted
