@@ -1,0 +1,36 @@
+diff --git a/node_modules/expo-modules-jsi/apple/scripts/build-xcframework.sh b/node_modules/expo-modules-jsi/apple/scripts/build-xcframework.sh
+--- a/node_modules/expo-modules-jsi/apple/scripts/build-xcframework.sh
++++ b/node_modules/expo-modules-jsi/apple/scripts/build-xcframework.sh
+@@ -204,6 +204,7 @@
+     DEBUG_INFORMATION_FORMAT=dwarf-with-dsym \
+     COMPILER_INDEX_STORE_ENABLE=NO \
+     SWIFT_COMPILATION_MODE=wholemodule \
++    MODULE_CACHE_DIR="$MODULE_CACHE_DIR" \
+   )
+ 
+   local product_path="${BUILD_PRODUCTS_PATH}/${build_dir_name}"
+@@ -317,6 +318,24 @@
+ # whether PODS_ROOT was passed as relative or absolute.
+ PODS_ROOT="$(cd "$PODS_ROOT" && pwd)"
+ 
++# Partition intermediate build state per Pods tree. The ios/ and tvos/ host
++# projects invoke this same script against different Pods directories that ship
++# different React-jsi headers. Sharing DerivedData and (especially) the Clang
++# module cache lets a cached ExpoModulesJSI_Cxx PCM built against one platform's
++# jsi.h leak into the other build, producing "facebook::jsi::Function has
++# different definitions in different modules" (and, when headers are mid-stage,
++# spurious "jsi/hermes header not found" errors). The xcframework in Products/
++# stays shared and additive — its slice IDs are already platform-distinct, so
++# only the per-platform intermediates need isolating. The module cache is set
++# explicitly because Xcode's default cache is a global location that
++# -derivedDataPath does not relocate.
++POD_KEY="$(printf '%s' "$PODS_ROOT" | shasum -a 256 | cut -c1-12)"
++DERIVED_DATA_PATH="${DERIVED_DATA_PATH}/${POD_KEY}"
++SPM_BUILD_PATH="${SPM_BUILD_PATH}/${POD_KEY}"
++SPM_WORKSPACE_PATH="${SPM_WORKSPACE_PATH}/${POD_KEY}"
++BUILD_PRODUCTS_PATH="${DERIVED_DATA_PATH}/Build/Products"
++MODULE_CACHE_DIR="${DERIVED_DATA_PATH}/ModuleCache"
++
+ # Resolve react-native. Order:
+ #   1. REACT_NATIVE_PATH env var (set by Xcode from the Podfile's build setting)
+ #      — for hosts that build RN from a non-npm location, e.g. Expo Go which
