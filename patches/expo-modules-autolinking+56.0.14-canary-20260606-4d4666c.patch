@@ -1,0 +1,35 @@
+diff --git a/node_modules/expo-modules-autolinking/build/reactNativeConfig/reactNativeConfig.js b/node_modules/expo-modules-autolinking/build/reactNativeConfig/reactNativeConfig.js
+--- a/node_modules/expo-modules-autolinking/build/reactNativeConfig/reactNativeConfig.js
++++ b/node_modules/expo-modules-autolinking/build/reactNativeConfig/reactNativeConfig.js
+@@ -15,6 +15,15 @@
+ const dependencies_1 = require("../dependencies");
+ const webResolver_1 = require("./webResolver");
+ const platforms_1 = require("../platforms");
++// Every known react-native host package. None are linkable native modules: exactly one is
++// the platform's core (linked via the Podfile + codegen), and the rest are duplicates that
++// must be filtered out so an ios build never autolinks react-native-tvos (and vice versa).
++const RN_HOST_PACKAGES = new Set([
++    'react-native',
++    'react-native-tvos',
++    'react-native-macos',
++    'react-native-windows',
++]);
+ const deepObjectMerge = (target, source) => {
+     if (source !== undefined &&
+         typeof target === 'object' &&
+@@ -49,6 +58,15 @@
+     if (excludeNames.has(resolution.name)) {
+         return null;
+     }
++    else if (supportPackage != null && RN_HOST_PACKAGES.has(resolution.name) && resolution.name !== supportPackage) {
++        // A sibling out-of-tree host (e.g. react-native-tvos on an ios build, or react-native
++        // on a tvos build) is a duplicate react-native core, not a linkable native module.
++        // The platform passed from the Podfile decides which single host is the real core;
++        // every other host is filtered out so it never reaches autolinking or codegen.
++        // Guarded on a non-null supportPackage: platforms without a single host (apple, web,
++        // devtools) fall through to the original react-native-only filter below.
++        return null;
++    }
+     else if (resolution.name === 'react-native' || resolution.name === supportPackage) {
+         // Starting from version 0.76, the `react-native` package only defines platforms
+         // when @react-native-community/cli-platform-android/ios is installed.
