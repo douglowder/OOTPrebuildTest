@@ -16,7 +16,7 @@ Then start the packager, and run the app on the Apple TV simulator.
 
 ## Things that work
 
-- pod install
+- tvOS prebuild works and runs pod install
 - tvOS build
 - tvOS debug app runs
 - tvOS debug app connects to packager
