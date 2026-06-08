@@ -26,12 +26,10 @@ Then start the packager, and run the app on the Apple TV simulator.
 
 ## Things that don't work yet
 
-- tvOS release build having issues with the event demo (buttons not focusable)
 - Published canary bare-minimum template is missing the tvos folder
 - `expo.icon` not copied into tvos folder
 - Pod install not automatically run for tvos on prebuild
 - No `expo run:tvos` command yet
-- iOS prebuild breaks if react-native-tvos present in dependencies
 
 ## Notes
 
