@@ -1,0 +1,17 @@
+diff --git a/node_modules/babel-preset-expo/build/configs/expo.js b/node_modules/babel-preset-expo/build/configs/expo.js
+index 65983c8..9a579fe 100644
+--- a/node_modules/babel-preset-expo/build/configs/expo.js
++++ b/node_modules/babel-preset-expo/build/configs/expo.js
+@@ -226,7 +226,11 @@ function getInlinesFromOptions(options) {
+     if (options.isProduction) {
+         inlines['process.env.NODE_ENV'] = 'production';
+         inlines['__DEV__'] = false;
+-        inlines['Platform.OS'] = options.platform;
++        // tvOS reports `Platform.OS === 'ios'` at runtime (react-native-tvos shares the
++        // iOS JS and platform extensions). Inline it as 'ios' so production matches the
++        // runtime/dev value; inlining the build platform 'tvos' here statically breaks
++        // `Platform.OS === 'ios'` checks (e.g. View.js setting isTVSelectable) under DCE.
++        inlines['Platform.OS'] = options.platform === 'tvos' ? 'ios' : options.platform;
+     }
+     if (process.env.NODE_ENV !== 'test') {
+         inlines['process.env.EXPO_BASE_URL'] = options.baseUrl;
