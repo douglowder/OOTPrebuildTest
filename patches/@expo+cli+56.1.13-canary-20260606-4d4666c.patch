@@ -1,0 +1,57 @@
+diff --git a/node_modules/@expo/cli/build/src/utils/cocoapods.js b/node_modules/@expo/cli/build/src/utils/cocoapods.js
+--- a/node_modules/@expo/cli/build/src/utils/cocoapods.js
++++ b/node_modules/@expo/cli/build/src/utils/cocoapods.js
+@@ -147,14 +147,14 @@
+     await _jsonfile().default.writeAsync(templateDirectory, packages);
+     return hasNewDependencies;
+ }
+-async function installCocoaPodsAsync(projectRoot) {
++async function installCocoaPodsAsync(projectRoot, nativeDir = 'ios') {
+     let step = (0, _ora.logNewSection)('Installing CocoaPods...');
+     if (process.platform !== 'darwin') {
+         step.succeed('Skipped installing CocoaPods because operating system is not on macOS.');
+         return false;
+     }
+     const packageManager = new (_packagemanager()).CocoaPodsPackageManager({
+-        cwd: _path().default.join(projectRoot, 'ios'),
++        cwd: _path().default.join(projectRoot, nativeDir),
+         silent: !(_env.env.EXPO_DEBUG || _env.env.CI)
+     });
+     if (!await packageManager.isCLIInstalledAsync()) {
+diff --git a/node_modules/@expo/cli/build/src/prebuild/prebuildAsync.js b/node_modules/@expo/cli/build/src/prebuild/prebuildAsync.js
+--- a/node_modules/@expo/cli/build/src/prebuild/prebuildAsync.js
++++ b/node_modules/@expo/cli/build/src/prebuild/prebuildAsync.js
+@@ -189,9 +189,17 @@
+     // Install CocoaPods
+     let podsInstalled = false;
+     // err towards running pod install less because it's slow and users can easily run npx pod-install afterwards.
+-    if (options.platforms.includes('ios') && options.install && needsPodInstall) {
++    // Apple platforms each have their own native dir (ios/, tvos/) and Podfile, so install per-platform.
++    const applePlatformDirs = [
++        'ios',
++        'tvos'
++    ].filter((platform)=>options.platforms.includes(platform));
++    if (applePlatformDirs.length && options.install && needsPodInstall) {
+         const { installCocoaPodsAsync } = await Promise.resolve().then(()=>/*#__PURE__*/ _interop_require_wildcard(require("../utils/cocoapods.js")));
+-        podsInstalled = await installCocoaPodsAsync(projectRoot);
++        for (const nativeDir of applePlatformDirs){
++            const installed = await installCocoaPodsAsync(projectRoot, nativeDir);
++            podsInstalled = podsInstalled || installed;
++        }
+     } else {
+         debug('Skipped pod install');
+     }
+diff --git a/node_modules/@expo/cli/build/src/prebuild/updateFromTemplate.js b/node_modules/@expo/cli/build/src/prebuild/updateFromTemplate.js
+--- a/node_modules/@expo/cli/build/src/prebuild/updateFromTemplate.js
++++ b/node_modules/@expo/cli/build/src/prebuild/updateFromTemplate.js
+@@ -97,8 +97,8 @@
+     });
+     return {
+         hasNewProjectFiles: !!copiedPaths.length,
+-        // If the iOS folder changes or new packages are added, we should rerun pod install.
+-        needsPodInstall: copiedPaths.includes('ios') || !!depsResults.changedDependencies.length,
++        // If an Apple native folder (ios/tvos) changes or new packages are added, we should rerun pod install.
++        needsPodInstall: copiedPaths.includes('ios') || copiedPaths.includes('tvos') || !!depsResults.changedDependencies.length,
+         templateChecksum,
+         ...depsResults
+     };
